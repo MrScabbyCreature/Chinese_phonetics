@@ -9,7 +9,8 @@ choice = input()
 ### left column
 if choice == '1':
     df = pd.read_excel("left_row.xlsx")
-    df['prob'] = 1.0
+    if 'prob' not in df.columns:
+        df['prob'] = 1.0
     def random_index():
         probability = np.random.random() * df['prob'].sum()
         index = 0
@@ -56,6 +57,9 @@ if choice == '1':
 
         #ask the question
         print("Write the pinyin of {} in your notebook:".format(hanze))
+        print("Show answer? (Y)")
+        input()
+        print("Answer is: {}".format(pinyin))
         print("Did you get it right?")
         choices = ['Yes!', 'No :(']
         for i in range(2):
@@ -67,7 +71,7 @@ if choice == '1':
                 print("Also, the meaning is \"{}\"".format(meaning))
                 return True
             else:
-                print("It's okay. The answer is {}.".format(pinyin))
+                print("It's okay. Next time!")
                 print("Also, the meaning is \"{}\"".format(meaning))
                 return False
         except Exception as e:
@@ -85,14 +89,16 @@ if choice == '1':
         if result is not None:
             df.loc[index, 'prob'] *= prob_change[random_choice][result]
         print("\n\n")
+        df.to_excel("left_row.xlsx")
         # display_dataframe(df)
 
 
 # right column
 if choice == '2':
     df = pd.read_excel("right_row.xlsx")
-    df['prob1'] = 1.0
-    df['prob2'] = 1.0
+    if 'prob1' not in df.columns or 'prob2' not in df.columns:
+        df['prob1'] = 1.0
+        df['prob2'] = 1.0
     def random_index(column):
         column = 'prob' + str(column)
         probability = np.random.random() * df[column].sum()
@@ -169,6 +175,9 @@ if choice == '2':
 
         #ask the question
         print("Write the hanze of '{}' in your notebook:".format(meaning))
+        print("Show answer? (Y)")
+        input()
+        print("Answer is: {}".format(hanze))
         print("Did you get it right?")
         choices = ['Yes!', 'No :(']
         for i in range(2):
@@ -180,7 +189,7 @@ if choice == '2':
                 print("Also, the pinyin is \"{}\"".format(pinyin))
                 return True
             else:
-                print("It's okay. The answer is {}.".format(hanze))
+                print("It's okay. Next time!")
                 print("Also, the pinyin is \"{}\"".format(pinyin))
                 return False
         except Exception as e:
@@ -193,6 +202,9 @@ if choice == '2':
 
         #ask the question
         print("Write the pinyin of {} in your notebook:".format(meaning))
+        print("Show answer? (Y)")
+        input()
+        print("Answer is: {}".format(pinyin))
         print("Did you get it right?")
         choices = ['Yes!', 'No :(']
         for i in range(2):
@@ -204,7 +216,7 @@ if choice == '2':
                 print("Also, the hanze is \"{}\"".format(hanze))
                 return True
             else:
-                print("It's okay. The answer is {}.".format(pinyin))
+                print("It's okay. Next time!")
                 print("Also, the hanze is \"{}\"".format(hanze))
                 return False
         except Exception as e:
@@ -216,8 +228,7 @@ if choice == '2':
     prob_change = [[1.5, 0.5],
                    [1.1, 0.9]]
 
-#     while True:
-    for i in range(20):
+    while True:
         #prob1 = meaning->hanze, prob2 = meaning->pinyin
         if np.random.random() < df['prob1'].sum() / (df['prob1'].sum() + df['prob2'].sum()):
             # meaning->hanze
@@ -233,4 +244,5 @@ if choice == '2':
             if result is not None:
                 df.loc[index, 'prob2'] *= prob_change[random_choice][result]
         print("\n\n")
+        df.to_excel("right_row.xlsx")
         # display_dataframe(df)
